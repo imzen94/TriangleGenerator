@@ -1,0 +1,296 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triangle Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class=" bg-gradient-to-b from-[#007c90] to-[#004c66]" x-data="$main()" x-effect="action(); $nextTick(() => { action(); });">
+
+    <div class="flex my-10 lg:my-0 lg:h-screen items-center justify-center ">
+
+        <div class="flex mx-6 lg:w-2/3 min-h-min flex-col lg:flex-row ">
+            <div class="col bg-white bg-opacity-50 shadow-2xl rounded-lg w-full lg:rounded-r-none lg:rounded-l-lg lg:w-1/2 ">
+
+                <div id="tri-holder" class="w-3/4 h-1/2 overflow-auto max-h-96 max-w-xs lg:max-w-full mx-auto my-10">
+                    <div class="h-0 w-0 transition-all" :style="`${tricss}`"> </div>
+                </div>
+                <div id="css" class="w-3/4 mx-auto my-8">
+                    <label>CSS</label>
+                    <textarea class="w-full resize-y max-h-64 lg:max-h-48 h-40 p-2 bg-white bg-opacity-50 text-sm" id="cssDisplay" x-text="tricss" readonly> </textarea>
+                </div>
+
+            </div>
+
+            <div class="col bg-white shadow-2xl rounded-lg lg:rounded-l-none lg:rounded-r-lg p-10 min-h-full lg:w-1/2 ">
+
+                <h1 class="text-3xl font-bold mt-0 mb-12 text-gray-700 tracking-wider text-center lg:text-left">Triangle Generator</h1>
+
+                <label class="lg:text-left lg:w-full lg:pl-8 font-bold">方向</label>
+                <div class="relative w-20 h-20 pt-1 pl-1 mx-auto mt-10 text-sm mb-10">
+                    <!-- <div class="absolute w-14 h-14 bg-cyan-400 rotate-45"></div> -->
+
+                    <label class="absolute z-10 -ml-16 min-w-max" for="topleft"><input type="radio" id="topleft" value="topleft" name="direction" x-model="direction"> 左上 </label>
+                    <label for="topleft" class="absolute w-8 h-8 bg-cyan-600 hover:bg-rose-400 active:bg-violet-700" :class="direction=='topleft' ? 'bg-violet-700' : '' "></label>
+
+                    <label class="absolute z-10 ml-24 min-w-max" for="topright"><input type="radio" id="topright" value="topright" name="direction" x-model="direction"> 右上 </label>
+                    <label for="topright" class="absolute w-8 h-8 bg-cyan-600 hover:bg-rose-400 active:bg-violet-700 ml-10" :class="direction=='topright' ? 'bg-violet-700' : '' "></label>
+
+                    <label class="absolute z-10 -ml-16 mt-12 min-w-max" for="bottomleft"><input type="radio" id="bottomleft" value="bottomleft" name="direction" x-model="direction" > 左下 </label>
+                    <label for="bottomleft" class="absolute w-8 h-8 bg-cyan-600 hover:bg-rose-400 active:bg-violet-700 mt-10" :class="direction=='bottomleft' ? 'bg-violet-700' : '' "></label>
+
+
+                    <label class="absolute z-10 ml-24 mt-12 min-w-max" for="bottomright"><input type="radio" id="bottomright" value="bottomright" name="direction" x-model="direction" > 右下 </label>
+                    <label for="bottomright" class="absolute w-8 h-8 bg-cyan-600 hover:bg-rose-400 active:bg-violet-700 mt-10 ml-10" :class="direction=='bottomright' ? 'bg-violet-700' : '' "></label>
+
+
+                    <label class="absolute z-10 ml-5 -mt-8 min-w-max" for="top"><input type="radio" id="top" value="top" name="direction" x-model="direction"> 上 </label>
+                    <label for="top" class="absolute w-8 h-8 bg-cyan-400 hover:bg-rose-400 active:bg-violet-700 rotate-45 ml-5" :class="direction=='top' ? 'bg-violet-700' : '' "></label>
+
+
+                    <label class="absolute z-10 ml-24 mt-6 min-w-max" for="right"><input type="radio" id="right" value="right" name="direction" x-model="direction"> 右 </label>
+                    <label for="right" class="absolute w-8 h-8 bg-cyan-400 hover:bg-rose-400 active:bg-violet-700 rotate-45 ml-10 mt-5" :class="direction=='right' ? 'bg-violet-700' : '' "></label>
+
+                    <label class="absolute z-10 ml-5 mt-20 min-w-max" for="bottom"><input type="radio" id="bottom" value="bottom" name="direction" x-model="direction" > 下 </label>
+                    <label for="bottom" class="absolute w-8 h-8 bg-cyan-400 hover:bg-rose-400 active:bg-violet-700 rotate-45 ml-5 mt-10" :class="direction=='bottom' ? 'bg-violet-700' : '' "></label>
+
+
+                    <label class="absolute z-10 -ml-16 mt-6 min-w-max" for="left"><input type="radio" id="left" value="left" name="direction" x-model="direction" > 左 </label>
+                    <label for="left" class="absolute w-8 h-8 bg-cyan-400 hover:bg-rose-400 active:bg-violet-700 rotate-45 mt-5" :class="direction=='left' ? 'bg-violet-700' : '' "></label>
+
+
+                    <div class="absolute w-11 h-11 bg-white ml-3.5 mt-3.5"></div>
+
+                </div>
+
+
+                <label class="lg:text-left lg:w-full lg:pl-8 font-bold">種類</label>
+                <div class="flex items-center mt-3 mb-6 mx-auto w-11/12 flex-col text-sm">
+                    <div class="flex justify-center lg:w-full flex-wrap text-center">
+                        <label class="mx-auto my-3 lg:my-1 px-1.5 lg:px-0" for="equilateral" x-show="!['topleft','topright','bottomright','bottomleft'].includes(direction)">
+              <input type="radio" id="equilateral" value="equilateral" x-model="type"> 等邊 
+            </label>
+                        <label class="mx-auto my-3 lg:my-1 px-1.5 lg:px-0" for="isosceles"><input type="radio" id="isosceles" value="isosceles" x-model="type"> 等腰 </label>
+                        <label class="mx-auto my-3 lg:my-1 px-1.5 lg:px-0" for="scalene"><input type="radio" id="scalene" value="scalene" x-model="type" > 不等邊 </label>
+                    </div>
+                    <label class="mx-auto my-3 lg:my-1" for="ie6">
+            <input type="checkbox" id="ie6" x-model="ie6"> IE6支援（加上chroma filter） 
+          </label>
+                </div>
+
+                <label class="lg:text-left lg:w-full lg:pl-8 font-bold">大小</label>
+                <div class="flex mt-3 mb-6 mx-auto w-11/12 text-sm items-center">
+                    <div class="flex mx-auto w-11/12 flex-col">
+                        <label class="lg:pl-8 my-3 lg:my-1 ">闊度<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-width" x-model="width" type="number" x-effect="isoscelesH()" :disabled="disableWidth">px</label>
+                        <label class="lg:pl-12 my-3 lg:my-1">左<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-left" x-model="left" type="number" :disabled="disableX">px</label>
+                        <label class="lg:pl-12 my-3 lg:my-1">右<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-right" x-model="right" type="number" :disabled="disableX">px</label>
+                    </div>
+                    <div class="flex mx-auto w-11/12 flex-col">
+                        <label class="lg:pl-8 my-3 lg:my-1">高度<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-height" x-model="height" type="number" x-effect="isoscelesW()" :disabled="disableHeight" >px</label>
+                        <label class="lg:pl-12 my-3 lg:my-1">上<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-top"  x-model="top" type="number" :disabled="disableY">px</label>
+                        <label class="lg:pl-12 my-3 lg:my-1">下<input class="border-2 border-gray-400 rounded mx-1 lg:mx-3 px-1 w-10 lg:w-14 disabled:bg-gray-300" id="size-bottom"  x-model="bottom" type="number" :disabled="disableY">px</label>
+                    </div>
+                </div>
+
+
+                <label class="lg:text-left lg:w-full lg:pl-8 font-bold">顏色</label>
+                <div class="flex items-center mt-3 mb-6 mx-auto w-11/12 flex-col">
+                    <input class="block border-2 border-gray-400 rounded " x-model="color" type="color">
+                </div>
+
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.magic('main', () => {
+                    return function main() {
+                        return {
+                            direction: 'top',
+                            type: 'equilateral',
+                            ie6: false,
+                            width: 200,
+                            left: 100,
+                            right: 100,
+                            height: 100,
+                            top: 50,
+                            bottom: 50,
+                            color: '#000000',
+                            tricss: '',
+                            disableWidth: false,
+                            disableHeight: false,
+                            disableY: false,
+                            disableX: false,
+                            equilateral() {
+                                if (['topleft', 'topright', 'bottomright', 'bottomleft'].includes(this.direction)) {
+                                    this.type = 'isosceles';
+                                    this.height = this.width;
+
+                                } else {
+                                    this.disableX = this.disableY = true;
+
+                                    if (['top', 'bottom'].includes(this.direction)) {
+                                        this.disableHeight = true;
+                                        h = this.round(this.width * Math.sqrt(3) / 2);
+                                    } else {
+                                        this.disableWidth = true;
+                                        h = this.round(this.height * Math.sqrt(3) / 2);
+                                    }
+
+                                    if (this.direction == 'top') {
+                                        borderWidth[2] = h;
+                                        borderWidth[1] = borderWidth[3] = this.round(this.width / 2);
+                                        borderColor[2] = chromaFilter[2] = this.color;
+                                    } else if (this.direction == 'bottom') {
+                                        borderWidth[0] = h;
+                                        borderWidth[1] = borderWidth[3] = this.round(this.width / 2);
+                                        borderColor[0] = chromaFilter[0] = this.color;
+                                    } else if (this.direction == 'right') {
+                                        borderWidth[3] = h;
+                                        borderWidth[0] = borderWidth[2] = this.round(this.height / 2);
+                                        borderColor[3] = chromaFilter[3] = this.color;
+                                    } else if (this.direction == 'left') {
+                                        borderWidth[1] = h;
+                                        borderWidth[0] = borderWidth[2] = this.round(this.height / 2);
+                                        borderColor[1] = chromaFilter[1] = this.color;
+                                    }
+                                }
+                            },
+                            isosceles() {
+                                this.disableX = this.disableY = true;
+
+                                if (this.direction == 'topleft') {
+                                    borderWidth[0] = borderWidth[1] = this.width;
+                                    borderColor[0] = this.color;
+                                } else if (this.direction == 'topright') {
+                                    borderWidth[1] = borderWidth[2] = this.width;
+                                    borderColor[1] = this.color;
+                                } else if (this.direction == 'bottomleft') {
+                                    borderWidth[0] = borderWidth[3] = this.width;
+                                    borderColor[3] = this.color;
+                                } else if (this.direction == 'bottomright') {
+                                    borderWidth[2] = borderWidth[3] = this.width;
+                                    borderColor[2] = this.color;
+                                } else if (this.direction == 'top') {
+                                    borderWidth[2] = this.height;
+                                    borderWidth[1] = borderWidth[3] = this.round(this.width / 2);
+                                    borderColor[2] = chromaFilter[2] = this.color;
+                                } else if (this.direction == 'bottom') {
+                                    borderWidth[0] = this.height;
+                                    borderWidth[1] = borderWidth[3] = this.round(this.width / 2);
+                                    borderColor[0] = chromaFilter[0] = this.color;
+                                } else if (this.direction == 'left') {
+                                    borderWidth[1] = this.width;
+                                    borderWidth[0] = borderWidth[2] = this.round(this.height / 2);
+                                    borderColor[1] = chromaFilter[1] = this.color;
+                                } else if (this.direction == 'right') {
+                                    borderWidth[3] = this.width;
+                                    borderWidth[0] = borderWidth[2] = this.round(this.height / 2);
+                                    borderColor[3] = chromaFilter[3] = this.color;
+                                }
+                            },
+                            scalene() {
+                                if (['topleft', 'topright', 'bottomright', 'bottomleft'].includes(this.direction)) {
+                                    this.disableX = this.disableY = true;
+                                } else if (['top', 'bottom'].includes(this.direction)) {
+                                    this.disableWidth = this.disableY = true;
+                                } else {
+                                    this.disableHeight = this.disableX = true;
+                                }
+
+                                if (this.direction == 'topleft') {
+                                    borderWidth[0] = this.height;
+                                    borderWidth[1] = this.width;
+                                    borderColor[0] = chromaFilter[0] = this.color;
+                                } else if (this.direction == 'topright') {
+                                    borderWidth[1] = this.width;
+                                    borderWidth[2] = this.height;
+                                    borderColor[1] = chromaFilter[1] = this.color;
+                                } else if (this.direction == 'bottomleft') {
+                                    borderWidth[0] = this.height;
+                                    borderWidth[3] = this.width;
+                                    borderColor[3] = chromaFilter[3] = this.color;
+                                } else if (this.direction == 'bottomright') {
+                                    borderWidth[2] = this.height;
+                                    borderWidth[3] = this.width;
+                                    borderColor[2] = chromaFilter[2] = this.color;
+                                } else if (this.direction == 'top') {
+                                    borderWidth[2] = this.height;
+                                    borderWidth[1] = this.right;
+                                    borderWidth[3] = this.left;
+                                    borderColor[2] = chromaFilter[2] = this.color;
+                                } else if (this.direction == 'bottom') {
+                                    borderWidth[0] = this.height;
+                                    borderWidth[1] = this.right;
+                                    borderWidth[3] = this.left;
+                                    borderColor[0] = chromaFilter[0] = this.color;
+                                } else if (this.direction == 'left') {
+                                    borderWidth[1] = this.width;
+                                    borderWidth[0] = this.top;
+                                    borderWidth[2] = this.bottom;
+                                    borderColor[1] = chromaFilter[1] = this.color;
+                                } else if (this.direction == 'right') {
+                                    borderWidth[3] = this.width;
+                                    borderWidth[0] = this.top;
+                                    borderWidth[2] = this.bottom;
+                                    borderColor[3] = chromaFilter[3] = this.color;
+                                }
+
+                            },
+                            action() {
+
+                                this.tricss = "width: 0;\r\nheight: 0;\r\nborder-style: solid;\r\n";
+                                h = 0;
+                                borderWidth = [0, 0, 0, 0];
+                                borderColor = ['transparent', 'transparent', 'transparent', 'transparent'];
+                                chromaFilter = this.color == '#000000' ? ['#ffffff', '#ffffff', '#ffffff', '#ffffff'] : ['#000000', '#000000', '#000000', '#000000'];
+                                this.disableHeight = this.disableWidth = this.disableX = this.disableY = false;
+
+                                if (this.type == 'equilateral') {
+                                    this.equilateral();
+                                }
+                                if (this.type == 'isosceles') {
+                                    this.isosceles();
+                                }
+                                if (this.type == 'scalene') {
+                                    this.scalene();
+                                }
+
+                                this.tricss += "border-width: " + borderWidth.join('px ') + "px;\r\n";
+                                this.tricss += "border-color: " + borderColor.join(' ') + ";\r\n";
+
+                                if (this.ie6) {
+                                    this.tricss += "_border-color: " + chromaFilter.join(' ') + ";\r\n";
+                                    this.tricss += "_filter: progid:DXImageTransform.Microsoft.Chroma(color='" + (this.color == '#000000' ? '#ffffff' : '#000000') + "');";
+                                }
+
+
+                            },
+                            isoscelesH() {
+                                if (this.type == 'isosceles' && ['topleft', 'topright', 'bottomright', 'bottomleft'].includes(this.direction)) {
+                                    this.height = this.width;
+                                }
+                            },
+                            isoscelesW() {
+                                if (this.type == 'isosceles' && ['topleft', 'topright', 'bottomright', 'bottomleft'].includes(this.direction)) {
+                                    this.width = this.height;
+                                }
+                            },
+                            round(number) {
+                                return number.toFixed(2).replace(/[.,]0+$/, "");
+                            }
+                        }
+                    }
+                })
+            })
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/@ryangjchandler/alpine-clipboard@2.x.x/dist/alpine-clipboard.js" defer></script>
+        <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+</body>
+
+</html>
